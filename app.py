@@ -22,11 +22,11 @@ def main():
     df = load_data()
     page = st.sidebar.selectbox("Choose a page", ["Homepage", "Exploration","Model"])
 
-    with open('myfile.pkl', 'rb') as pkl_file:
-        tree_from_file = pickle.load(pkl_file)
+    with open('sgd_ppl_clf.pkl', 'rb') as pkl_file:
+        sgd_ppl_clf = pickle.load(pkl_file)
 
     if page == "Homepage":
-        st.header("Данные для задачи классификации банкнот.")
+        st.header("Данные для задачи классификации заголовков.")
         st.write("Данные для датасета были извлечены из изображений, снятых с подлинных и поддельных банкнотоподобных образцов. Для оцифровки использовалась промышленная камера, обычно используемая для проверки печати.Инструмент Wavelet Transform использовался для извлечения признаков из изображений.")
         st.write("1) variance of Wavelet Transformed image (дисперсия вейвлет-преобразованного изображения), тип вещественный.")
         st.write("2) skewness of Wavelet Transformed image (асимметрия вейвлет-преобразованного изображения), тип вещественный.")
@@ -42,7 +42,7 @@ def main():
 
 @st.cache
 def load_data():
-    df = pd.read_csv('preprocessing_data_banknote_authentication.csv')
+    df = pd.read_csv('train_data_preprocessed.tsv', sep='\t')
     return df
 
 def visualize_data(df):
