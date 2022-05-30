@@ -32,12 +32,13 @@ def main():
 
     if page == "Homepage":
         st.header("Данные для задачи классификации заголовков.")
+        st.write("Датасет представляет из себя заголвки с правдивыми и ложными новостями.")
+        st.dataframe(df)
     elif page == "Exploration":
         st.title("Data Exploration")
         visualize_data(df)
     else:
         st.title("Model ")
-
-
+    
 if __name__ == '__main__':
     main()
