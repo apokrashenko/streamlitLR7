@@ -9,7 +9,9 @@ import pickle
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+%matplotlib inline
 
 @st.cache
 def load_data():
@@ -21,6 +23,30 @@ def visualize_data(df):
     c = alt.Chart(df).mark_circle().encode(x='variance', y='skewness',
                                        color='class')
     st.write(c)
+    
+def str_corpus(corpus): # Получаем из списка слов текстовую строку
+    str_corpus = ''
+    for i in corpus:
+        str_corpus += ' ' + i
+    str_corpus = str_corpus.strip()
+    return str_corpus
+
+def get_corpus(data): # Получаем список всех слов в corpus
+    corpus = []
+    for phrase in data:
+        for word in phrase.split():
+            corpus.append(word)
+    return corpus
+
+def get_wordCloud(corpus): # Получаем облако слов
+    wordCloud = WordCloud(background_color='white',
+                              stopwords=STOPWORDS,
+                              width=3000,
+                              height=2500,
+                              max_words=200,
+                              random_state=42
+                         ).generate(str_corpus(corpus))
+    return wordCloud
 
     
 def main():
@@ -35,7 +61,13 @@ def main():
         st.write("Датасет представляет из себя заголвки с правдивыми и ложными новостями.")
         st.dataframe(df)
     elif page == "Exploration":
-        st.title("Data Exploration")
+        st.header("Визуализация и анализирование датасета")
+        st.title("После обработки")
+        corpus_clean = get_corpus(train_data_preprocessed['title'].values)
+        procWordCloud = get_wordCloud(corpus_clean)
+        num_words = len(set(corpus_clean))
+        st.write("Облако слов обработанного набора данных содержит уникальных слов:")
+        print(num_words)
         visualize_data(df)
     else:
         st.title("Model ")
