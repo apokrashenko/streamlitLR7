@@ -11,7 +11,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
-%matplotlib inline
 
 @st.cache
 def load_data():
