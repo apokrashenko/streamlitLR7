@@ -11,39 +11,44 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report, confusion_matrix
-
+import streamlit as st
+import altair as alt
+import pandas as pd
+import numpy as np
+from sklearn.tree import DecisionTreeClassifier
+import pickle
 
 def main():
-    st.title('Uber pickups in NYC')
-    df = pd.read_csv('https://pastebin.com/raw/NaZLBe1N')
-    df.drop(df.columns[0], axis=1, inplace=True)
-    X = np.array(df.drop(['Classes  '], axis=1))
-    y = np.array(df['Classes  '])
-    y = y.astype(np.int64)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
-    clf = KNeighborsClassifier()
-    clf.fit(X_train, y_train)
-    page = st.sidebar.selectbox("Выберите страницу", ('Основная', 'Все, связанное с моделью'))
-    if page == 'Основная':
-        st.title('Исследуем датасет с пожарами в Алжире')
-        st.write("Просто датафрейм")
-        st.dataframe(df)
-    elif page == 'Все, связанное с моделью':
-        st.title('Исследуем датасет с пожарами в Алжире')
-        st.title('Наконец заработало!!')
-        st.markdown('### Анализ связей столбцов')
-        st.text('Корреляция:')
-        st.text('Влияние различных классов')
-        st.title('Моделируем')
-        st.write("Точность, просто датафрейм, предсказание")
-        st.write("Точность")
-        st.write(str(clf.score(X_test, y_test)))
-        st.write("Просто датафрейм")
-        st.dataframe(df)
-        st.write("Предсказание")
-        df2 = pd.DataFrame({'Реальность': y_test, 'Предсказание': clf.predict(X_test)})
-        st.dataframe(df2)
+    df = load_data()
+    page = st.sidebar.selectbox("Choose a page", ["Homepage", "Exploration","Model"])
+
+    with open('myfile.pkl', 'rb') as pkl_file:
+        tree_from_file = pickle.load(pkl_file)
+
+    if page == "Homepage":
+        st.header("Данные для задачи классификации банкнот.")
+        st.write("Данные для датасета были извлечены из изображений, снятых с подлинных и поддельных банкнотоподобных образцов. Для оцифровки использовалась промышленная камера, обычно используемая для проверки печати.Инструмент Wavelet Transform использовался для извлечения признаков из изображений.")
+        st.write("1) variance of Wavelet Transformed image (дисперсия вейвлет-преобразованного изображения), тип вещественный.")
+        st.write("2) skewness of Wavelet Transformed image (асимметрия вейвлет-преобразованного изображения), тип вещественный.")
+        st.write("3) curtosis of Wavelet Transformed image (эксцесс преобразованного изображения), тип вещественный.")
+        st.write("4) entropy of image (энтропия изображения), тип вещественный.")
+        st.write(df)
+    elif page == "Exploration":
+        st.title("Data Exploration")
+        visualize_data(df)
+    else:
+        st.title("Model ")
 
 
-if __name__ == '__main__':
+@st.cache
+def load_data():
+    df = pd.read_csv('preprocessing_data_banknote_authentication.csv')
+    return df
+
+def visualize_data(df):
+    c = alt.Chart(df).mark_circle().encode(x='variance', y='skewness',
+                                       color='class')
+    st.write(c)
+
+if __name__ == "main":
     main()
