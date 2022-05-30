@@ -50,6 +50,9 @@ def get_wordCloud(corpus): # Получаем облако слов
     
 def main():
     df = load_data()
+    corpus_clean = get_corpus(df['title'].values)
+    procWordCloud = get_wordCloud(corpus_clean)
+    num_words = len(set(corpus_clean))
     page = st.sidebar.selectbox("Choose a page", ["Homepage", "Exploration","Model"])
 
     with open('sgd_ppl_clf.pkl', 'rb') as pkl_file:
@@ -62,9 +65,6 @@ def main():
     elif page == "Exploration":
         st.header("Визуализация и анализирование датасета")
         st.title("После обработки")
-        corpus_clean = get_corpus(df['title'].values)
-        procWordCloud = get_wordCloud(corpus_clean)
-        num_words = len(set(corpus_clean))
         st.write("Облако слов обработанного набора данных содержит уникальных слов:")
         print(num_words)
         #visualize_data(df)
