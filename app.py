@@ -67,7 +67,12 @@ def main():
         num_words = len(set(corpus_clean))
         st.write("Облако слов обработанного набора данных содержит уникальных слов:")
         print(num_words)
-        visualize_data(df)
+        #visualize_data(df)
+        fig = plt.figure(figsize=(20, 8))
+        plt.subplot(1, 2, 1)
+        plt.imshow(procWordCloud)
+        plt.axis('off')
+        plt.subplot(1, 2, 1)
     else:
         st.title("Model ")
     
